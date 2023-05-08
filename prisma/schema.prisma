@@ -1,0 +1,132 @@
+datasource db {
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Shop {
+    id          BigInt    @id @default(autoincrement())
+    owner_id    BigInt    @unique
+    name        String
+    description String
+    logo        String
+    active      Boolean   @default(true)
+    products    Product[]
+    orders      Order[]
+    created_at  DateTime  @default(now())
+    updated_at  DateTime  @updatedAt
+    owner       User      @relation("ShopOwner", fields: [owner_id], references: [id])
+}
+
+model Product {
+    id           BigInt         @id @default(autoincrement())
+    shop_id      BigInt
+    name         String
+    description  String?
+    categories   Category[]
+    price        Float
+    images       Image[]
+    created_at   DateTime       @default(now())
+    updated_at   DateTime       @updatedAt
+    category_id  BigInt?
+    orderDetails OrderDetails[]
+    shop         Shop           @relation(fields: [shop_id], references: [id])
+    active       Boolean        @default(true)
+
+    @@index([shop_id])
+    @@index([category_id])
+}
+
+model OrderDetails {
+    id         BigInt  @id @default(autoincrement())
+    order      Order   @relation(fields: [order_id], references: [id])
+    product    Product @relation(fields: [product_id], references: [id])
+    price      Float
+    quantity   Float
+    order_id   BigInt
+    product_id BigInt
+
+    @@index([product_id])
+    @@index([order_id])
+}
+
+model UserDetails {
+    id          BigInt   @id @default(autoincrement())
+    city        String
+    country     String
+    phone       String
+    postal_code String
+    birthdate   DateTime
+    user_id     BigInt   @unique
+    user        User     @relation("UserDetails", fields: [user_id], references: [id])
+}
+
+model User {
+    id          BigInt       @id @default(autoincrement())
+    first_name  String
+    last_name   String
+    email       String
+    password    String
+    image       Image?
+    role        UserRole     @default(USER)
+    active      Boolean      @default(true)
+    created_at  DateTime     @default(now())
+    updated_at  DateTime     @updatedAt
+    userDetails UserDetails? @relation("UserDetails")
+    orders      Order[]
+    shop        Shop?        @relation("ShopOwner")
+    shop_id     BigInt?
+}
+
+enum UserRole {
+    USER
+    ADMIN
+}
+
+model Category {
+    id       BigInt    @id @default(autoincrement())
+    image_id BigInt?   @unique
+    name     String
+    image    Image?    @relation(fields: [image_id], references: [id])
+    products Product[]
+}
+
+model Order {
+    id           BigInt         @id @default(autoincrement())
+    user_id      BigInt
+    shop_id      BigInt
+    status       OrderStatus    @default(PENDING)
+    total_amount Float
+    created_at   DateTime       @default(now())
+    updated_at   DateTime       @updatedAt
+    user         User           @relation(fields: [user_id], references: [id])
+    shop         Shop           @relation(fields: [shop_id], references: [id])
+    orderDetails OrderDetails[]
+
+    @@index([shop_id])
+    @@index([user_id])
+}
+
+model Image {
+    id         BigInt    @id @default(autoincrement())
+    image_url  String
+    created_at DateTime  @default(now())
+    category   Category?
+    user_id    BigInt?   @unique
+    user       User?     @relation(fields: [user_id], references: [id])
+    product_id BigInt?
+    product    Product?  @relation(fields: [product_id], references: [id])
+
+    @@index([product_id])
+}
+
+enum OrderStatus {
+    PENDING
+    SHIPPED
+    DELIVERED
+    CANCELED
+}
