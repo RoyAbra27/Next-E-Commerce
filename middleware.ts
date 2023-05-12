@@ -1,70 +1,60 @@
-// Import NextRequest and NextResponse from the 'next/server' package
-import { NextRequest, NextResponse as res } from "next/server";
+import { users } from '@clerk/nextjs/dist/api';
+import { withClerkMiddleware, getAuth } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-// Import the 'jose' library for handling JWT tokens
-import * as jose from "jose";
-// Define an asynchronous middleware function that takes a NextRequest and res as arguments
-export async function middleware(req: NextRequest) {
-  // Retrieve the JWT token from the 'authorization' header of the request
-  const token = req.headers.get("authorization") as string;
+// Set the paths that don't require the user to be signed in
+const publicPaths = ['/', '/sign-in', '/sign-up']
+
+const isPublic = (path: string): boolean => {
+    return publicPaths.find((x: string) =>
+      path.match(new RegExp(`^${x}$`.replace('$', '($|/)')))
+    ) !== undefined;
+  };
   
-  // If the token is not present in the header, return an error with status 401 (Unauthorized)
-  if (!token) {
-    return res.json(
-      {
-        errorMessage:
-          "Unauthorized request (need to send token to this endpoint)",
-        status: 401,
-      }
-    );
+
+export default  withClerkMiddleware(async(request: NextRequest) => {
+  if (isPublic(request.nextUrl.pathname)) {
+    return NextResponse.next()
+  }
+  // if the user is not signed in redirect them to the sign in page.
+  const { userId } = getAuth(request)
+  
+  if (!userId) {
+    // redirect the users to /pages/sign-in/[[...index]].ts  
+    return NextResponse.redirect(pushToUrl(request,'/sign-in'))
   }
 
-  // Encode the JWT_SECRET from the environment variables as a Uint8Array
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
- 
-  // Try to verify the JWT token using the 'jose' library and the secret
-  try {
-    const tokenData = (await jose.jwtVerify(token, secret)).payload;
-    console.log(tokenData.role);
-    // Check if the request is for an admin API and the user is not an admin
-    if (
-      req.nextUrl.pathname.startsWith("/api/admin") &&
-      tokenData.role !== "ADMIN"
-    ) {
-      return  res.json(
-       { errorMessage: "You are not Admin", status: 401 }
-      );
-    }
-    // Check if the request is for a user API and the user is neither a user nor an admin
-    if (
-      req.nextUrl.pathname.startsWith("/api/user") &&
-      tokenData.role !== "USER" &&
-      tokenData.role !== "ADMIN"
-    ) {
-      return res.json(
-        { errorMessage: "You are not User", status: 401 }
-      );
-    }
-  // set a custom header on the request object
-  req.headers.set('token-data', JSON.stringify(tokenData))
-  // pass the modified req object to the route handler
-  return res.next({ request:req })
-  } catch (err) {
-    // If the token verification fails, return an error with status 401 (Unauthorized)
-    return res.json(
-      {
-        errorMessage: "Invalid token (expired or invalid)",
-        status: 401
-      }
-    );
+  const role =(await users.getUser(userId as string)).publicMetadata.role
+  // // !If Admin Or User
+  if (
+    request.nextUrl.pathname.startsWith("/admin" ||"/api/admin") &&
+    role !== "ADMIN"
+  ) {
+    return NextResponse.redirect(pushToUrl(request,'/not-found'))
   }
+  // // Check if the request is for a user API and the user is neither a user nor an admin
+  if (
+    request.nextUrl.pathname.startsWith("/api/user") &&
+    role !== "USER" &&
+    role !== "ADMIN"
+  ) {
+    return NextResponse.redirect(pushToUrl(request,'/not-found'))
+  }
+
+
+  //!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+  request.headers.set('userAuth',userId as string)
+  return NextResponse.next()
+})
+
+export const config = { matcher: [ '/((?!_next/image|_next/static|favicon.ico).)','/admin/:path*','/users/:path*',"/api/user/:path*",'/api/admin/:path*','/api/shop/create-shop','/api/shop/my-shop']};
+
+
+
+const pushToUrl = (req:NextRequest,url:string)=>{
+  const stringUrl = new URL(url, req.url)
+  stringUrl.searchParams.set('redirect_url', req.url)
+  return stringUrl as URL;
 }
-
-// Define a configuration object for the middleware
-export const config = {
-  // Specify that the middleware should be applied to the '/api/auth/me' endpoint
-  matcher: [
-    "/api/admin/:path*",
-    "/api/user/:path*"
-  ],
-};

@@ -9,8 +9,8 @@ generator client {
 }
 
 model Shop {
-    id          BigInt    @id @default(autoincrement())
-    owner_id    BigInt    @unique
+    id          Int    @id @default(autoincrement())
+    owner_id    String    @unique
     name        String
     description String
     logo        String
@@ -23,8 +23,8 @@ model Shop {
 }
 
 model Product {
-    id           BigInt         @id @default(autoincrement())
-    shop_id      BigInt
+    id           Int         @id @default(autoincrement())
+    shop_id      Int
     name         String
     description  String?
     categories   Category[]
@@ -32,7 +32,7 @@ model Product {
     images       Image[]
     created_at   DateTime       @default(now())
     updated_at   DateTime       @updatedAt
-    category_id  BigInt?
+    category_id  Int?
     orderDetails OrderDetails[]
     shop         Shop           @relation(fields: [shop_id], references: [id])
     active       Boolean        @default(true)
@@ -42,63 +42,40 @@ model Product {
 }
 
 model OrderDetails {
-    id         BigInt  @id @default(autoincrement())
+    id         Int  @id @default(autoincrement())
     order      Order   @relation(fields: [order_id], references: [id])
     product    Product @relation(fields: [product_id], references: [id])
     price      Float
     quantity   Float
-    order_id   BigInt
-    product_id BigInt
+    order_id   Int
+    product_id Int
 
     @@index([product_id])
     @@index([order_id])
 }
 
-model UserDetails {
-    id          BigInt   @id @default(autoincrement())
-    city        String
-    country     String
-    phone       String
-    postal_code String
-    birthdate   DateTime
-    user_id     BigInt   @unique
-    user        User     @relation("UserDetails", fields: [user_id], references: [id])
-}
 
 model User {
-    id          BigInt       @id @default(autoincrement())
-    first_name  String
-    last_name   String
-    email       String
-    password    String
-    image       Image?
-    role        UserRole     @default(USER)
-    active      Boolean      @default(true)
-    created_at  DateTime     @default(now())
-    updated_at  DateTime     @updatedAt
-    userDetails UserDetails? @relation("UserDetails")
+    id          String       @id @unique
     orders      Order[]
     shop        Shop?        @relation("ShopOwner")
-    shop_id     BigInt?
+    shop_id     Int?
 }
 
-enum UserRole {
-    USER
-    ADMIN
-}
+
 
 model Category {
-    id       BigInt    @id @default(autoincrement())
-    image_id BigInt?   @unique
+    id       Int    @id @default(autoincrement())
+    image_id Int?   @unique
     name     String
     image    Image?    @relation(fields: [image_id], references: [id])
     products Product[]
 }
 
 model Order {
-    id           BigInt         @id @default(autoincrement())
-    user_id      BigInt
-    shop_id      BigInt
+    id           Int         @id @default(autoincrement())
+    user_id      String
+    shop_id      Int
     status       OrderStatus    @default(PENDING)
     total_amount Float
     created_at   DateTime       @default(now())
@@ -112,15 +89,12 @@ model Order {
 }
 
 model Image {
-    id         BigInt    @id @default(autoincrement())
+    id         Int    @id @default(autoincrement())
     image_url  String
     created_at DateTime  @default(now())
     category   Category?
-    user_id    BigInt?   @unique
-    user       User?     @relation(fields: [user_id], references: [id])
-    product_id BigInt?
+    product_id Int?
     product    Product?  @relation(fields: [product_id], references: [id])
-
     @@index([product_id])
 }
 
