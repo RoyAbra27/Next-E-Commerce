@@ -1,30 +1,24 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
 
 const prisma = new PrismaClient();
 
-// get my shop
+// get all products
 export async function GET(req: Request) {
-  const { userId } = auth();
   if (req.method !== 'GET') {
     return new Response('Method not allowed', { status: 405 });
   }
 
   try {
-    const posts = await prisma.shop.findUnique({
-      where: {
-        owner_id: userId as string,
-      },
+    const products = await prisma.product.findMany({
       select: {
         name: true,
         description: true,
-        logo: true,
-        owner_id: true,
-        products: { orderBy: { created_at: 'desc' } },
+        images: true,
+        category_id: true,
       },
     });
-    return NextResponse.json(posts);
+    return NextResponse.json(products);
   } catch (error) {
     console.log(error);
     return NextResponse.json(error);
