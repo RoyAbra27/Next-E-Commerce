@@ -3,23 +3,30 @@ import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-// get all products
-export async function GET(req: Request) {
+// Get product by other user - by url param
+export async function GET(
+  req: Request,
+  { params: { id } }: { params: { id: string } }
+) {
   if (req.method !== 'GET') {
     return new Response('Method not allowed', { status: 405 });
   }
 
   try {
-    const products = await prisma.product.findMany({
+    const productId = parseInt(id as string);
+    const product = await prisma.product.findUnique({
+      where: {
+        id: productId as number,
+      },
       select: {
         name: true,
         description: true,
-        shop_id: true,
+        price: true,
         images: true,
-        category_id: true,
+        created_at: true,
       },
     });
-    return NextResponse.json(products);
+    return NextResponse.json(product);
   } catch (error) {
     console.log(error);
     return NextResponse.json(error);

@@ -8,7 +8,6 @@ export async function GET(
   req: Request,
   { params: { id } }: { params: { id: string | number } }
 ) {
-  console.log(id, typeof id);
   if (req.method !== 'GET') {
     return new Response('Method not allowed', { status: 405 });
   }
@@ -24,7 +23,17 @@ export async function GET(
           description: true,
           logo: true,
           owner_id: true,
-          products: { orderBy: { created_at: 'desc' } },
+          products: {
+            orderBy: { created_at: 'desc' },
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              price: true,
+              images: true,
+              created_at: true,
+            },
+          },
         },
       });
       return NextResponse.json(shop);
@@ -44,6 +53,17 @@ export async function GET(
         description: true,
         logo: true,
         owner_id: true,
+        products: {
+          orderBy: { created_at: 'desc' },
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            images: true,
+            created_at: true,
+          },
+        },
       },
     });
     return NextResponse.json(shop);

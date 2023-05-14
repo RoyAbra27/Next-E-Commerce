@@ -12,9 +12,9 @@
 
 ### Products routes
 
-- Get all products ❌
+- Get all products ✅
 - Get all products from a single shop ✅
-- Get get a single product by product ID ❌
+- Get get a single product by product ID ✅
 - Create new product for my shop ❌
 - Update single product ❌
 
