@@ -13,19 +13,6 @@ const ProfileDropdown = ({ profileNavigation, classNames }:profileDropdownProps)
   const {user} = useUser()
   const {openUserProfile,signOut,openSignUp,openSignIn} = useClerk();
 
-/*
- ?profileNavigation: An array of objects representing the items in the profile dropdown menu.
- !Each object has a 'name' and 'href' property, where 'name' is the display text and 'href' is the navigation target.
-*/
-
-/*
-? handleAuthOpenModal: A function passed down from the parent component (Header) to handle opening the
- !authentication modal when the 'Login' or 'Register' item is clicked in the profile dropdown menu.
-! The function takes 'href' as a parameter, which determines whether the modal should display the login or register form.
-*/
-
-
-
   // Use the useNavigate hook to navigate between pages
 const router = useRouter()
   return (
