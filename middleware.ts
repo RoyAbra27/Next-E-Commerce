@@ -26,8 +26,9 @@ export default withClerkMiddleware(async (request: NextRequest) => {
     return NextResponse.redirect(pushToUrl(request, '/sign-in'));
   }
 
-  const role = (await users.getUser(userId as string)).publicMetadata.role;
-  // // !If Admin Or User
+  const role =(await users.getUser(userId as string)).publicMetadata.role
+   // !If Admin Or User
+
   if (
     request.nextUrl.pathname.startsWith('/admin' || '/api/admin') &&
     role !== 'ADMIN'
@@ -43,7 +44,7 @@ export default withClerkMiddleware(async (request: NextRequest) => {
     return NextResponse.redirect(pushToUrl(request, '/not-found'));
   }
 
-  //!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 
   request.headers.set('userAuth', userId as string);
   return NextResponse.next();

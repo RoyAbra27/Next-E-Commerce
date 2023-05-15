@@ -13,7 +13,6 @@ export async function PUT(req: Request,{params:{id}}: {params:{id:string}}) {
 
   try{
     const {userId} = auth();
-
     const user = await users.getUser(userId as string) as User;
   
     if(id === user.id){   
