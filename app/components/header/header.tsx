@@ -1,6 +1,5 @@
 "use client"
 import { SignInButton, SignUpButton, SignedIn,SignedOut, UserButton } from "@clerk/nextjs"
-import Link from "next/link"
 import Navbar from "./nav/navbar"
 
 

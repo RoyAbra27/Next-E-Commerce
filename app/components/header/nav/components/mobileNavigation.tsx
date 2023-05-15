@@ -3,7 +3,6 @@
 import React from 'react'
 import { Disclosure } from '@headlessui/react'
 import { mobileNavigationProps } from '@/types/navbar/navbar'
-
 const MobileNavigation = ({classNames,navigation}:mobileNavigationProps) => {
   return (
     <Disclosure.Panel className="sm:hidden">
