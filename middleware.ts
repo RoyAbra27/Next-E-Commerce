@@ -26,7 +26,7 @@ export default  withClerkMiddleware(async(request: NextRequest) => {
   }
 
   const role =(await users.getUser(userId as string)).publicMetadata.role
-  // // !If Admin Or User
+   // !If Admin Or User
   if (
     request.nextUrl.pathname.startsWith("/admin" ||"/api/admin") &&
     role !== "ADMIN"
@@ -49,7 +49,7 @@ export default  withClerkMiddleware(async(request: NextRequest) => {
   return NextResponse.next()
 })
 
-export const config = { matcher: [ '/((?!_next/image|_next/static|favicon.ico).)','/admin/:path*','/users/:path*',"/api/user/:path*",'/api/admin/:path*','/api/shop/create-shop','/api/shop/my-shop']};
+export const config = { matcher: [ '/((?!_next/image|_next/static|favicon.ico).)','/admin/:path*','/users/:path*',"/api/user/:path*",'/api/admin/:path*','/api/shop/create-shop','/api/shop/my-shop','/shops']};
 
 
 
