@@ -10,7 +10,7 @@ import React, { useState } from 'react'
 import { useAuth, useClerk } from '@clerk/nextjs'
 // Define the navigation items for the main menu
 const navigation = [
-  { name: 'Shops', href: '#', current: true },
+  { name: 'Shops', href: '#', current: false },
   { name: 'Offers', href: '#', current: false },
   { name: 'FAQ', href: '#', current: false },
   { name: 'Contact', href: '#', current: false },
@@ -28,6 +28,7 @@ const profileNavigation = [
   { name: 'Sign Up', href: '/sign-up' }
 ]
 const profileNavigationSignedIn = [
+  { name: 'users', href: '/admin/users' },
   { name: 'Account', href: '/account' },
   { name: 'Sign Out', href: '/sign-out' }
 ]

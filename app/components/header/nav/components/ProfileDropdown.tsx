@@ -1,7 +1,6 @@
 "use client"
 
 // Import required components and libraries
-import React, { useState } from 'react'
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { useRouter } from 'next/navigation'
@@ -35,6 +34,7 @@ const router = useRouter()
               </div>
             </div>
             </SignedOut>
+
             <SignedIn>
             {/* <UserButton /> */}
             <div className="avatar placeholder">
@@ -62,7 +62,6 @@ const router = useRouter()
           {/* Dropdown menu items */}
          
           <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-         
             {profileNavigation.map((item:any, i:number) => (
               <Menu.Item key={i}>
                 {({ active }) => (
@@ -70,16 +69,23 @@ const router = useRouter()
                   onClick={() => {
                     //? Check if the item is not 'Login' or 'Register'
                     if(item.href === '/account'){
+                      console.log('item.href',item.href)
+
                       openUserProfile()
+
                     }else if(item.href === '/sign-out'){
+                      console.log('item.href',item.href)
+
                       signOut()
-                    }else if('/sign-in'){
+
+                    }else if(item.href === '/sign-in'){
                       openSignIn()
-                    }else if('/sign-up'){
+                    }else if(item.href === '/sign-up'){
                       openSignUp()
                     }else{
                       router.push(item.href)
                     }
+                    
                   }}
                     className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 w-[100%]')}
                   >
