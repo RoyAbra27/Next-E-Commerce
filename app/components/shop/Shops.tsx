@@ -1,6 +1,7 @@
 'use client';
 
-import { Shop } from '@/app/shops/page';
+import { Shop } from "@prisma/client";
+
 export default function ShopSection({ shops }: { shops: Shop[] }) {
   return (
     <div>

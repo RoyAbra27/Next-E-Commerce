@@ -1,45 +1,11 @@
-'use client';
 
-import { useEffect, useState } from 'react';
-import CreateShop from '../components/shop/CreateShop';
-import ShopSection from '../components/shop/Shops';
-import Link from 'next/link';
-import { Product } from '@prisma/client';
 
-export interface Shop {
-  name: string;
-  description: string;
-  logo: string;
-  products?: Product[];
-  owner_id: string;
-}
-const PostPage = () => {
-  async function getShops() {
-    try {
-      const res = await fetch('/api/shop');
+import React from 'react'
 
-      const data = (await res.json()) as Shop[];
-
-      setShops(data);
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  const [shops, setShops] = useState<Shop[]>([]);
-
-  useEffect(() => {
-    getShops();
-  }, []);
+const Shops = () => {
   return (
-    <div>
-      <Link href={'/'}> Home</Link>
-      <h1 className="text-[2em]">All shops</h1>
-      <CreateShop getShops={getShops} />
-      <ShopSection shops={shops} />
-    </div>
-  );
-};
+    <div>Shops</div>
+  )
+}
 
-export default PostPage;
+export default Shops

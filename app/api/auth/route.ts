@@ -6,7 +6,7 @@ const handler =async (req:Request) => {
     try{
         const evt = await req.json() as WebhookEvent; 
         if(evt.type === "user.created"){
-            await users.updateUser(evt.data.id,{publicMetadata:{role:'USER'}})
+            await users.updateUser(evt.data.id,{publicMetadata:{role:'USER',shop:false}})
             const {id} = evt.data;
             await prisma.user.create({
                 data:{

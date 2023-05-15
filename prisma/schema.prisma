@@ -9,21 +9,22 @@ generator client {
 }
 
 model Shop {
-    id          Int    @id @default(autoincrement())
+    id          Int       @id @default(autoincrement())
     owner_id    String    @unique
     name        String
     description String
-    logo        String
     active      Boolean   @default(true)
     products    Product[]
     orders      Order[]
     created_at  DateTime  @default(now())
     updated_at  DateTime  @updatedAt
     owner       User      @relation("ShopOwner", fields: [owner_id], references: [id])
+    images     Image[]
 }
 
+
 model Product {
-    id           Int         @id @default(autoincrement())
+    id           Int            @id @default(autoincrement())
     shop_id      Int
     name         String
     description  String?
@@ -42,7 +43,7 @@ model Product {
 }
 
 model OrderDetails {
-    id         Int  @id @default(autoincrement())
+    id         Int     @id @default(autoincrement())
     order      Order   @relation(fields: [order_id], references: [id])
     product    Product @relation(fields: [product_id], references: [id])
     price      Float
@@ -54,26 +55,23 @@ model OrderDetails {
     @@index([order_id])
 }
 
-
 model User {
-    id          String       @id @unique
-    orders      Order[]
-    shop        Shop?        @relation("ShopOwner")
-    shop_id     Int?
+    id      String  @id @unique
+    orders  Order[]
+    shop    Shop?   @relation("ShopOwner")
+    shop_id Int?
 }
 
-
-
 model Category {
-    id       Int    @id @default(autoincrement())
-    image_id Int?   @unique
+    id       Int       @id @default(autoincrement())
+    image_id Int?      @unique
     name     String
     image    Image?    @relation(fields: [image_id], references: [id])
     products Product[]
 }
 
 model Order {
-    id           Int         @id @default(autoincrement())
+    id           Int            @id @default(autoincrement())
     user_id      String
     shop_id      Int
     status       OrderStatus    @default(PENDING)
@@ -89,13 +87,16 @@ model Order {
 }
 
 model Image {
-    id         Int    @id @default(autoincrement())
+    id         Int       @id @default(autoincrement())
     image_url  String
     created_at DateTime  @default(now())
     category   Category?
     product_id Int?
     product    Product?  @relation(fields: [product_id], references: [id])
+    shop_id    Int?
+    shop       Shop?     @relation(fields: [shop_id], references: [id])
     @@index([product_id])
+    @@index([shop_id])
 }
 
 enum OrderStatus {

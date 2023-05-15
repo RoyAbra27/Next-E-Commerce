@@ -1,18 +1,30 @@
-'use client';
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 
-export default function CreateShop({ getShops }: { getShops: () => void }) {
-  const [shopName, setShopName] = useState<string>('');
-  const [shopDescription, setShopDescription] = useState<string>('');
+export default function CreateShop({createShopHandler}:{createShopHandler:()=>void}) {
+  const [shopName, setShopName] = useState<string>("");
+  const [shopDescription, setShopDescription] = useState<string>("");
+  const [logo, setlogo] = useState<string>("");
+  const [coverImage, setCoverImage] = useState<string>("");
   async function createShop(e: React.FormEvent) {
-    e.preventDefault();
-    const data = await fetch('/api/shop/create-shop', {
-      method: 'POST',
-      body: JSON.stringify({ name: shopName, description: shopDescription }),
-    });
 
-    if (data) {
-      getShops();
+    try{
+      e.preventDefault();
+      const data = await fetch("/api/shop/create-shop", {
+        method: "POST",
+        body: JSON.stringify({
+          name: shopName,
+          description: shopDescription,
+          logo: logo,
+          coverImage: coverImage,
+        }),
+      });
+
+      const resp = await data.json();
+      console.log(resp);
+      createShopHandler()
+    }catch(err){
+      console.log(err)  
     }
   }
 
@@ -32,6 +44,20 @@ export default function CreateShop({ getShops }: { getShops: () => void }) {
           className="border-2 border-black rounded-md block"
           placeholder="ShopDescription"
           onChange={(e) => setShopDescription(e.target.value)}
+        />
+        <input
+          type="text"
+          value={logo}
+          className="border-2 border-black rounded-md block"
+          placeholder="logo"
+          onChange={(e) => setlogo(e.target.value)}
+        />
+        <input
+          type="text"
+          value={coverImage}
+          className="border-2 border-black rounded-md block"
+          placeholder="cover"
+          onChange={(e) => setCoverImage(e.target.value)}
         />
         <button
           type="submit"
