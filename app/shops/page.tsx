@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import CreateShop from '../components/shop/CreateShop';
 import ShopSection from '../components/shop/Shops';
 import Link from 'next/link';
+import { Product } from '@prisma/client';
 
 export interface Shop {
   name: string;
   description: string;
   logo: string;
+  products?: Product[];
   owner_id: string;
 }
 const PostPage = () => {

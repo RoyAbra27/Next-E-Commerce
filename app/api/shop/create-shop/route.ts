@@ -20,7 +20,6 @@ export async function POST(req: Request) {
   if (!shop.name.length) {
     return new Response('Title is required', { status: 400 });
   }
-  console.log(1);
   try {
     const newShop = await prisma.shop.create({
       data: {
