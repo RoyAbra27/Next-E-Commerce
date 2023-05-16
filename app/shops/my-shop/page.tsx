@@ -1,35 +1,35 @@
-"use client"
+"use client";
+import CreateShop from "@/app/components/shop/CreateShop";
+import { shopType } from "@/types/shop/shop";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
-import CreateShop from '@/app/components/shop/CreateShop'
-import { useUser } from '@clerk/nextjs'
-import React, { useEffect, useState } from 'react'
 const MyShop = () => {
-  const [loading, setLoading] = useState(true)
-  const [createShop, setCreateShop] = useState(false)
-
-  const createShopHandler:()=>void = () => {
-    setCreateShop(true)
-  }
-  const {user} = useUser()
-  const isShop = user?.publicMetadata.shop as boolean
-
-  useEffect(() => {
-    if (user?.publicMetadata.shop !== undefined) {
-      setLoading(false)
+  const [loading, setLoading] = useState(true);
+  const [shop, setShop] = useState<shopType|null>(null);
+  const fetchMyShop = async () => {
+    setLoading(true);
+    const response = await fetch("/api/shop/my-shop");
+    const data = await response.json() ;
+    if (data.isShop) {
+      setShop(data.myShop);
     }
-  }, [user?.publicMetadata.shop,user,createShop])
-    console.log(isShop)
-    console.log(loading)
-  return (
-    <div>
-      {loading ? <div>Loading...</div>:
-       <div>
-        {isShop ? <div>Shop</div> :  <CreateShop createShopHandler={createShopHandler}/>}
-        </div>}
-     
-    </div>
-  )
-}
+    console.log(data);
+    setLoading(false);
+  };
+  useEffect(() => {
+    fetchMyShop();
+  }, []);
+  return <div>{loading ? <h1>Loading...</h1> : <>
+  {shop?
+  <div>
+    <img src={shop.coverImage as string} width={'100%'}  alt="" />
+    <img src={shop.logo as string} width={'100%'}  alt="" />
+  </div>:<CreateShop refresh={fetchMyShop}/>}
+  
+  </>}</div>;
+};
 
-export default MyShop
+export default MyShop;
+
 

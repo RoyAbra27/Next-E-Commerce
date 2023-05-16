@@ -1,14 +1,13 @@
 "use client";
 import React, { useState } from "react";
 
-export default function CreateShop({createShopHandler}:{createShopHandler:()=>void}) {
+export default function CreateShop({ refresh }: { refresh: () => void }) {
   const [shopName, setShopName] = useState<string>("");
   const [shopDescription, setShopDescription] = useState<string>("");
   const [logo, setlogo] = useState<string>("");
   const [coverImage, setCoverImage] = useState<string>("");
   async function createShop(e: React.FormEvent) {
-
-    try{
+    try {
       e.preventDefault();
       const data = await fetch("/api/shop/create-shop", {
         method: "POST",
@@ -20,11 +19,12 @@ export default function CreateShop({createShopHandler}:{createShopHandler:()=>vo
         }),
       });
 
-      const resp = await data.json();
-      console.log(resp);
-      createShopHandler()
-    }catch(err){
-      console.log(err)  
+      const res = await data.json();
+      if (res.status === "success") refresh();
+      console.log(res);
+    } catch (err) {
+      alert(err)
+      console.log(err);
     }
   }
 
