@@ -10,8 +10,8 @@ const shopValidation = {
         const schema = Joi.object({
             name: Joi.string().min(2).max(50).required(),
             description: Joi.string().max(350).required(),
-            logo: Joi.string().max(2500).required(),
-            coverImage: Joi.string().max(2500).required(),
+            logo: Joi.string().max(2500).allow("",null),
+            coverImage: Joi.string().max(2500).allow("",null),
         })
         return schema.validate(bodyData);
     }

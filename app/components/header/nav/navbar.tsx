@@ -10,14 +10,14 @@ import React, { useState } from 'react'
 import { useAuth, useClerk } from '@clerk/nextjs'
 // Define the navigation items for the main menu
 const navigation = [
+  { name: 'Home', href: '/', current: false },
   { name: 'Shops', href: '#', current: false },
-  { name: 'Offers', href: '#', current: false },
   { name: 'FAQ', href: '#', current: false },
   { name: 'Contact', href: '#', current: false },
 ]
 const userNavigation = [
-  { name: 'MyShop', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
+  { name: 'Home', href: '/', current: true },
+  { name: 'MyShop', href: '/shops/my-shop', current: false },
   { name: 'Projects', href: '#', current: false },
   { name: 'Calendar', href: '#', current: false },
 ]
@@ -65,7 +65,7 @@ const {isSignedIn} = useAuth()
        
           </div>
           {/* Mobile navigation */}
-          <MobileNavigation classNames={classNames} navigation={isSignedIn?userNavigation: navigation} />
+          <MobileNavigation  classNames={classNames} navigation={isSignedIn?userNavigation: navigation} />
           {/* Authentication modal */}
         </>
       )}

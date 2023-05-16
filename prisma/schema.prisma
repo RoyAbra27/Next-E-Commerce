@@ -9,19 +9,21 @@ generator client {
 }
 
 model Shop {
-    id          Int       @id @default(autoincrement())
-    owner_id    String    @unique
-    name        String
-    description String
-    active      Boolean   @default(true)
-    products    Product[]
-    orders      Order[]
-    created_at  DateTime  @default(now())
-    updated_at  DateTime  @updatedAt
-    owner       User      @relation("ShopOwner", fields: [owner_id], references: [id])
-    images     Image[]
+    id            Int       @id @default(autoincrement())
+    owner_id      String    @unique
+    name          String
+    description   String
+    active        Boolean   @default(true)
+    products      Product[]
+    orders        Order[]
+    created_at    DateTime  @default(now())
+    updated_at    DateTime  @updatedAt
+    owner         User      @relation("ShopOwner", fields: [owner_id], references: [id])
+    cover_image_id Int? @unique
+    logo_image_id  Int? @unique
+    logo_image     Image?    @relation("ShopLogo", fields: [logo_image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    cover_image    Image?    @relation("ShopCover", fields: [cover_image_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
-
 
 model Product {
     id           Int            @id @default(autoincrement())
@@ -93,10 +95,10 @@ model Image {
     category   Category?
     product_id Int?
     product    Product?  @relation(fields: [product_id], references: [id])
-    shop_id    Int?
-    shop       Shop?     @relation(fields: [shop_id], references: [id])
+    shopLogo   Shop?     @relation("ShopLogo")
+    shopCover  Shop?     @relation("ShopCover")
+
     @@index([product_id])
-    @@index([shop_id])
 }
 
 enum OrderStatus {

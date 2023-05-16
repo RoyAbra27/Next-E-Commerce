@@ -10,6 +10,7 @@ import { CgSmartphone } from "react-icons/cg";
 import { FaBookOpen } from "react-icons/fa";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import Image from "next/image";
+import Link from "next/link";
 
 const categories = [
   {
@@ -80,7 +81,7 @@ const Navigation = ({ navigation, classNames }: navigationProps) => {
         <div className="flex space-x-4">
           {/* Desktop */}
           {navigation.map((item) => (
-            <a
+            <Link
               key={item.name}
               href={item.href}
               className={classNames(
@@ -92,7 +93,7 @@ const Navigation = ({ navigation, classNames }: navigationProps) => {
               aria-current={item.current ? "page" : undefined}
             >
               {item.name}
-            </a>
+            </Link>
           ))}
         </div>
       </div>

@@ -12,7 +12,6 @@ export async function POST(req: Request) {
     return new Response("Method not allowed", { status: 405 });
   }
   const { userId } = auth() as { userId: string };
-  const user = await users.getUser(userId);
   const bodyData: bodyRequest = await req.json();
   const validate = shopValidation.create(bodyData);
   if (validate.error) {
@@ -22,37 +21,41 @@ export async function POST(req: Request) {
     );
   }
 
+
+
   try {
+    const {coverImage,description,logo,name} = bodyData
+   const logo_image= await prisma.image.create({
+      data: {
+        image_url: logo
+      },
+    }) as Image ;
+
+    const cover_image = await prisma.image.create({
+      data: {
+        image_url: coverImage
+      },
+    }) as Image;
+    
     const shop: Shop = await prisma.shop.create({
       data: {
-        name: bodyData.name,
-        description: bodyData.description,
+        name: name,
+        description: description,
         owner_id: userId,
+        logo_image_id: logo_image.id,
+        cover_image_id: cover_image.id,
       },
     });
 
-    if (!shop) return NextResponse.json({ shop });
 
-    await prisma.image.create({
-      data: {
-        image_url: bodyData.logo,
-        shop_id: shop.id,
-      },
-    });
+  
 
-    await prisma.image.create({
-      data: {
-        image_url: bodyData.coverImage,
-        shop_id: shop.id,
-      },
-    });
-
-    if (shop) users.updateUser(userId, { publicMetadata: {role:user.publicMetadata.role,shop: true } });
     return NextResponse.json({
       message: "Shop Created Successfully",
       status: "success",
     });
-  } catch (error) {
+  } catch (error)
+   {
     return NextResponse.json({
       message: "Shop Creation Failed",
       status: "failed",

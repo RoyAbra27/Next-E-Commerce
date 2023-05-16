@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Image, PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs';
 
@@ -8,7 +8,6 @@ const { userId } = auth();
 type shopProps = {
   name?: string;
   description?: string;
-  logo?: string;
   active?: boolean;
 };
 
@@ -26,12 +25,17 @@ export async function GET(req: Request) {
       select: {
         name: true,
         description: true,
-        logo: true,
+        logo_image: true,
+        cover_image: true,
         owner_id: true,
         products: { orderBy: { created_at: 'desc' } },
       },
     });
-    return NextResponse.json(myShop);
+    
+    if (!myShop) {
+      return NextResponse.json({ message: 'Shop not found', isShop: false }, { status: 204 });
+    }
+    return NextResponse.json({myShop,isShop:true});
   } catch (error) {
     console.log(error);
     return NextResponse.json(error);
@@ -54,7 +58,6 @@ export async function PUT(req: Request) {
       data: {
         name: updateDetails.name,
         description: updateDetails.description,
-        logo: updateDetails.logo,
         active: updateDetails.active,
       },
     });
