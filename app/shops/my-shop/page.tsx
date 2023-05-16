@@ -1,7 +1,6 @@
 "use client";
 import CreateShop from "@/app/components/shop/CreateShop";
 import { shopType } from "@/types/shop/shop";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const MyShop = () => {
@@ -23,8 +22,9 @@ const MyShop = () => {
   return <div>{loading ? <h1>Loading...</h1> : <>
   {shop?
   <div>
-    <img src={shop.coverImage as string} width={'100%'}  alt="" />
-    <img src={shop.logo as string} width={'100%'}  alt="" />
+    <div style={{backgroundImage:`url(${shop.coverImage})`}} className=" h-[48vh] bg-cover bg-center"></div>
+    {/* <img src={shop.coverImage as string} width={'100%'}  alt="" /> */}
+    {/* <img src={shop.logo as string} width={'100%'}  alt="" /> */}
   </div>:<CreateShop refresh={fetchMyShop}/>}
   
   </>}</div>;

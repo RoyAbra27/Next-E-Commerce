@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   }
   const { userId } = auth() as { userId: string };
   const bodyData: bodyRequest = await req.json();
-  const validate = shopValidation.create(bodyData);
+  const validate = shopValidation.create.backend(bodyData);
   if (validate.error) {
     return NextResponse.json(
       { message: validate.error.details[0].message, status: "failed" },
