@@ -8,3 +8,12 @@ export interface shopType {
     owner_id: string,
     products: Product[],
 }
+
+
+export interface createShopFields {
+    name: string;
+    description: string;
+    logo: string;
+    coverImage: string;
+}
+   

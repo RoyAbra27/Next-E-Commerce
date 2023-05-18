@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import {useForm} from 'react-hook-form'
 import { joiResolver } from '@hookform/resolvers/joi';
 import shopValidation from "@/validation/shopValidation";
-
+import { CldUploadButton } from "next-cloudinary";
 export default function CreateShop({ refresh }: { refresh: () => void }) {
   const {register,reset,handleSubmit,formState:{errors}} = useForm({resolver:joiResolver(shopValidation.create.frontend())})
 
@@ -11,6 +11,7 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
     const onSub = (bodyData:any) => {
       console.log(bodyData)
       createShop(bodyData)
+
     }
 
   async function createShop(bodyData:{
@@ -81,7 +82,7 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
         </label>
         <input
           {...register('coverImage')}
-          type="text"
+          type="file"
           className="border border-gray-300 p-2 rounded-md"
         />
         {errors.coverImage && <p className="text-red-500">{errors.coverImage.message as string}</p>}
