@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import {useForm} from 'react-hook-form'
 import { joiResolver } from '@hookform/resolvers/joi';
 import shopValidation from "@/validation/shopValidation";
-import { CldUploadButton } from "next-cloudinary";
+import { CldImage } from "next-cloudinary";
 export default function CreateShop({ refresh }: { refresh: () => void }) {
   const {register,reset,handleSubmit,formState:{errors}} = useForm({resolver:joiResolver(shopValidation.create.frontend())})
 
@@ -46,6 +46,8 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
       <div className="flex flex-col">
         <label  className="font-medium text-gray-700">
           Shop Name
+          <CldImage width="600" height="600" src="test Folder/vhggfswr4jf2idv2dokl" alt="<Alt Text>" />
+
         </label>
         <input
         {...register('shopName')}
