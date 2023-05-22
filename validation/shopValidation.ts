@@ -24,12 +24,8 @@ const shopValidation = {
           "string.empty": "Description is required",
           "string.max": "Description should have a maximum length of {#limit}",
         }),
-        // logo: Joi.string().max(2500).allow("", null).messages({
-        //   "string.max": "Logo should have a maximum length of {#limit}",
-        // }),
-        // coverImage: Joi.string().max(2500).allow("", null).messages({
-        //   "string.max": "Cover Image should have a maximum length of {#limit}",
-        // }),
+        logo: Joi.object().allow("", null),
+        coverImage: Joi.object().allow("", null)
       });
       return schema;
     },
