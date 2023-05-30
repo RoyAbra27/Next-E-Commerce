@@ -1,35 +1,36 @@
 "use client";
 import CreateShop from "@/app/components/shop/CreateShop";
-import { shopType } from "@/types/shop/shop";
+import useShop from "@/hooks/useShop";
 import React, { useEffect, useState } from "react";
+import Container from "@/app/components/container/container";
+import ShopThemeProvider from "./components/shopThemeProvider";
 
 const MyShop = () => {
-  const [loading, setLoading] = useState(true);
-  const [shop, setShop] = useState<shopType|null>(null);
-  const fetchMyShop = async () => {
-    setLoading(true);
-    const response = await fetch("/api/shop/my-shop");
-    const data = await response.json() ;
-    if (data.isShop) {
-      setShop(data.myShop);
-    }
-    console.log(data);
-    setLoading(false);
-  };
+  const { fetchMyShop, loading, shop } = useShop();
+
   useEffect(() => {
     fetchMyShop();
   }, []);
-  return <div>{loading ? <h1>Loading...</h1> : <>
-  {shop?
-  <div>
-    <div style={{backgroundImage:`url(${shop.coverImage})`}} className=" h-[48vh] bg-cover bg-center"></div>
-    {/* <img src={shop.coverImage as string} width={'100%'}  alt="" /> */}
-    {/* <img src={shop.logo as string} width={'100%'}  alt="" /> */}
-  </div>:<CreateShop refresh={fetchMyShop}/>}
-  
-  </>}</div>;
+  return (
+    <div>
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <>
+          {shop ? (
+            <Container>
+              <ShopThemeProvider coverImage={shop.coverImage as string}>
+                <p className="text-black">dasdsa</p>
+
+              </ShopThemeProvider>
+            </Container>
+          ) : (
+            <CreateShop refresh={fetchMyShop} />
+          )}
+        </>
+      )}
+    </div>
+  );
 };
 
 export default MyShop;
-
-
