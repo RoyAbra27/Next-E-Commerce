@@ -1,28 +1,32 @@
-"use client";
-import React, { useState } from "react";
-import {useForm} from 'react-hook-form'
+'use client';
+import React, { useState } from 'react';
 import { joiResolver } from '@hookform/resolvers/joi';
-import shopValidation from "@/validation/shopValidation";
-import { CldImage } from "next-cloudinary";
+import shopValidation from '@/validation/shopValidation';
+import { CldImage } from 'next-cloudinary';
+import { useForm } from 'react-hook-form';
 export default function CreateShop({ refresh }: { refresh: () => void }) {
-  const {register,reset,handleSubmit,formState:{errors}} = useForm({resolver:joiResolver(shopValidation.create.frontend())})
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: joiResolver(shopValidation.create.frontend()) });
 
-  console.log(errors)
-    const onSub = (bodyData:any) => {
-      console.log(bodyData)
-      createShop(bodyData)
+  console.log(errors);
+  const onSub = (bodyData: any) => {
+    console.log(bodyData);
+    createShop(bodyData);
+  };
 
-    }
-
-  async function createShop(bodyData:{
+  async function createShop(bodyData: {
     shopName: string;
     shopDescription: string;
     logo: string | null;
     coverImage: string | null;
   }) {
     try {
-      const data = await fetch("/api/shop/create-shop", {
-        method: "POST",
+      const data = await fetch('/api/shop/create-shop', {
+        method: 'POST',
         body: JSON.stringify({
           name: bodyData.shopName,
           description: bodyData.shopDescription,
@@ -32,70 +36,79 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
       });
 
       const res = await data.json();
-      if (res.status === "success") refresh();
+      if (res.status === 'success') refresh();
       console.log(res);
     } catch (err) {
-      alert(err)
+      alert(err);
       console.log(err);
     }
   }
 
   return (
     <div>
-     <form onSubmit={handleSubmit(onSub)} className="space-y-4 w-full max-w-md mx-auto mt-8">
-      <div className="flex flex-col">
-        <label  className="font-medium text-gray-700">
-          Shop Name
-          <CldImage width="600" height="600" src="test Folder/vhggfswr4jf2idv2dokl" alt="<Alt Text>" />
-
-        </label>
-        <input
-        {...register('shopName')}
-          type="text"
-          className="border border-gray-300 p-2 rounded-md"
-        />
-        {errors.shopName && <p className="text-red-500">{errors.shopName.message as string}</p>}
-      </div>
-      <div className="flex flex-col">
-        <label  className="font-medium text-gray-700">
-          Shop Description
-        </label>
-        <textarea
-        {...register('shopDescription')}
-          className="border border-gray-300 p-2 rounded-md"
-        />
-        {errors.shopDescription && <p className="text-red-500">{errors.shopDescription.message as string}</p>}
-      
-      </div>
-      <div className="flex flex-col">
-        <label  className="font-medium text-gray-700">
-          Logo
-        </label>
-        <input
-          {...register('logo')}
-          type="text"
-          className="border border-gray-300 p-2 rounded-md"
-        />
-        {errors.logo && <p className="text-red-500">{errors.logo.message as string}</p>}
-      </div>
-      <div className="flex flex-col">
-        <label  className="font-medium text-gray-700">
-          Cover Image
-        </label>
-        <input
-          {...register('coverImage')}
-          type="file"
-          className="border border-gray-300 p-2 rounded-md"
-        />
-        {errors.coverImage && <p className="text-red-500">{errors.coverImage.message as string}</p>}
-      </div>
-      <button
-        className="bg-blue-600 text-white py-2 px-4 rounded-md"
+      <form
+        onSubmit={handleSubmit(onSub)}
+        className="space-y-4 w-full max-w-md mx-auto mt-8"
       >
-        Submit
-      </button>
-    </form>
-
+        <div className="flex flex-col">
+          <label className="font-medium text-gray-700">
+            Shop Name
+            <CldImage
+              width="600"
+              height="600"
+              src="test Folder/vhggfswr4jf2idv2dokl"
+              alt="<Alt Text>"
+            />
+          </label>
+          <input
+            {...register('shopName')}
+            type="text"
+            className="border border-gray-300 p-2 rounded-md"
+          />
+          {errors.shopName && (
+            <p className="text-red-500">{errors.shopName.message as string}</p>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label className="font-medium text-gray-700">Shop Description</label>
+          <textarea
+            {...register('shopDescription')}
+            className="border border-gray-300 p-2 rounded-md"
+          />
+          {errors.shopDescription && (
+            <p className="text-red-500">
+              {errors.shopDescription.message as string}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label className="font-medium text-gray-700">Logo</label>
+          <input
+            {...register('logo')}
+            type="text"
+            className="border border-gray-300 p-2 rounded-md"
+          />
+          {errors.logo && (
+            <p className="text-red-500">{errors.logo.message as string}</p>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label className="font-medium text-gray-700">Cover Image</label>
+          <input
+            {...register('coverImage')}
+            type="file"
+            className="border border-gray-300 p-2 rounded-md"
+          />
+          {errors.coverImage && (
+            <p className="text-red-500">
+              {errors.coverImage.message as string}
+            </p>
+          )}
+        </div>
+        <button className="bg-blue-600 text-white py-2 px-4 rounded-md">
+          Submit
+        </button>
+      </form>
     </div>
   );
 }

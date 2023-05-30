@@ -16,7 +16,7 @@ export async function GET(req: Request) {
         description: true,
         shop_id: true,
         images: true,
-        category_id: true,
+        categories: true,
       },
     });
     return NextResponse.json(products);

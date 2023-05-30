@@ -9,11 +9,21 @@ type productProps = {
   description?: string;
   price: number;
   images?: string[];
-  category_id?: number[];
+  categories?: [];
   shop_id: number;
 };
 
 // add new product
+/**
+ * This is a TypeScript function that handles a POST request for creating a new product, checking for
+ * authentication and required fields.
+ * @param {Request} req - The parameter `req` is of type `Request`, which is an object representing an
+ * HTTP request made by the client. It contains information such as the request method, headers, and
+ * body.
+ * @returns If the request method is not POST, a response with a status of 405 and a message "Method
+ * not allowed" is being returned. If the title of the new product is empty, a response with a status
+ * of 400 and a message "Title is required" is being returned.
+ */
 export async function POST(req: Request) {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
@@ -46,6 +56,6 @@ export async function POST(req: Request) {
     return NextResponse.json(newProduct);
   } catch (error) {
     console.log(error);
-    return NextResponse.json(null);
+    return NextResponse.json(error);
   }
 }
