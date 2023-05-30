@@ -1,9 +1,11 @@
 'use client';
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
 import shopValidation from '@/validation/shopValidation';
 import { CldImage } from 'next-cloudinary';
-import { useForm } from 'react-hook-form';
+import useCloudinary from '@/hooks/useCloudinary';
+import { useAuth } from '@clerk/nextjs';
 export default function CreateShop({ refresh }: { refresh: () => void }) {
   const {
     register,
@@ -11,11 +13,25 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: joiResolver(shopValidation.create.frontend()) });
-
+  const { userId } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const {
+    uploadImage: { getUrlSrc, handleFileChange },
+  } = useCloudinary();
   console.log(errors);
-  const onSub = (bodyData: any) => {
+  const onSub = async (bodyData: any) => {
+    setLoading(true);
     console.log(bodyData);
+    const urlCoverImage =
+      (await getUrlSrc(bodyData.coverImage[0])) + ' ' + userId;
+    const urlLogo = (await getUrlSrc(bodyData.logo[0])) + ' ' + userId;
+    bodyData.coverImage = urlCoverImage;
+    bodyData.logo = urlLogo;
     createShop(bodyData);
+    // 1. hash url
+    // 2. create shop with url
+    //? to update cover image shop
+    // first check if url end with userId on the user is session
   };
 
   async function createShop(bodyData: {
@@ -38,9 +54,11 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
       const res = await data.json();
       if (res.status === 'success') refresh();
       console.log(res);
+      setLoading(false);
     } catch (err) {
       alert(err);
       console.log(err);
+      setLoading(false);
     }
   }
 
@@ -53,12 +71,8 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
         <div className="flex flex-col">
           <label className="font-medium text-gray-700">
             Shop Name
-            <CldImage
-              width="600"
-              height="600"
-              src="test Folder/vhggfswr4jf2idv2dokl"
-              alt="<Alt Text>"
-            />
+            {/* <CldImage width="600" height="600" src="test Folder/s4geaby6rzvhwmilngzr
+" alt="<Alt Text>" /> */}
           </label>
           <input
             {...register('shopName')}
@@ -85,7 +99,7 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
           <label className="font-medium text-gray-700">Logo</label>
           <input
             {...register('logo')}
-            type="text"
+            type="file"
             className="border border-gray-300 p-2 rounded-md"
           />
           {errors.logo && (
@@ -109,6 +123,16 @@ export default function CreateShop({ refresh }: { refresh: () => void }) {
           Submit
         </button>
       </form>
+
+      {/* <input onChange={handleFileChange} type="file" />
+      <button
+        onClick={async () => {
+          const url = await getUrlSrc();
+          console.log(url);
+        }}
+      >
+        Upload Image
+      </button> */}
     </div>
   );
 }
